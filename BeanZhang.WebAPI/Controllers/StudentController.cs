@@ -23,8 +23,9 @@ namespace BeanZhang.WebAPI.Controllers
         {
             var response = new ResponseModel<List<StudentModel>>();
 
+            List<StudentModel> ss = new List<StudentModel>();
+            string s = ss[0].Name;
             response.data = StudentModels.Where(t => t.Id == id).ToList();
-
             return response;
         }
 

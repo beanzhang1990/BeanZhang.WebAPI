@@ -20,23 +20,32 @@ namespace BeanZhang.WebAPI
             try
             {
 
-            
-            string actionArguments = context.ActionArguments.ToJson();
 
-            var resultContext = await next();
+                string actionArguments = context.ActionArguments.ToJson();
 
-            string url = resultContext.HttpContext.Request.Host + resultContext.HttpContext.Request.Path + resultContext.HttpContext.Request.QueryString;
+                var resultContext = await next();
 
-            string method = resultContext.HttpContext.Request.Method;
+                string url = resultContext.HttpContext.Request.Host + resultContext.HttpContext.Request.Path + resultContext.HttpContext.Request.QueryString;
 
-            dynamic result = resultContext.Result.GetType().Name == "EmptyResult" ? new { Value = "EmptyResult" } : resultContext.Result as dynamic;
+                string method = resultContext.HttpContext.Request.Method;
 
-            string response = JsonConvert.SerializeObject(result.Value);
+                //dynamic result = resultContext.Result.GetType().Name == "EmptyResult" ? new { Value = "EmptyResult" } : resultContext.Result as dynamic;
 
-            logger.LogInformation($"URL：{url} \n " +
-                                  $"Method：{method} \n " +
-                                  $"ActionArguments：{actionArguments}\n " +
-                                  $"Response：{response}\n ");
+                dynamic result = "";
+                if (resultContext.Result == null)
+                {
+                    result = new { Value = resultContext.Exception.Message } as dynamic;
+                }
+                else
+                {
+                    result = resultContext.Result.GetType().Name == "EmptyResult" ? new { Value = "EmptyResult" } : resultContext.Result as dynamic;
+                }
+
+                string response = JsonConvert.SerializeObject(result.Value);
+                logger.LogInformation($"URL：{url} \n " +
+                                      $"Method：{method} \n " +
+                                      $"ActionArguments：{actionArguments}\n " +
+                                      $"Response：{response}\n ");
             }
             catch (System.Exception)
             {
