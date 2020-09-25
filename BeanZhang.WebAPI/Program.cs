@@ -17,7 +17,12 @@ namespace BeanZhang.WebAPI
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+            Host.CreateDefaultBuilder(args).ConfigureLogging((context, loggingBuilder) =>
+            {
+                loggingBuilder.AddFilter("System", LogLevel.Error);
+                loggingBuilder.AddFilter("Microsoft", LogLevel.Error);
+                loggingBuilder.AddLog4Net();
+            })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

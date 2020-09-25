@@ -26,6 +26,11 @@ namespace BeanZhang.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(ApiLogFilter));
+            });
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -35,7 +40,6 @@ namespace BeanZhang.WebAPI
                     Description = "Web API"
                 });
             });
-            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +54,9 @@ namespace BeanZhang.WebAPI
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "BeanZhang API V1");
             });
+
+            app.UseMiddleware<ExceptionMiddleware>();
+
             app.UseRouting();
 
             app.UseAuthorization();
